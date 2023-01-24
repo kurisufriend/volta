@@ -64,7 +64,6 @@ nlohmann::json tagging::filtered(nlohmann::json db, std::vector<std::string> tag
                 }
             }
         }
-        std::cout << i.first << " " << good << " " << tags.size() << std::endl;
         if (good == tags.size())
             {nu[i.first] = i.second;}
     }
