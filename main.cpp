@@ -1,3 +1,4 @@
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_video.h>
@@ -39,6 +40,7 @@ int main(int argc, char* argv[])
     bool quit = false;
 
     nlohmann::json db = tagging::init(BASEDIR);
+    int ci = 1;
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -49,6 +51,20 @@ int main(int argc, char* argv[])
             ImGui_ImplSDL2_ProcessEvent(&e);
             if( e.type == SDL_QUIT )
                 {quit = true;}
+            if (e.type == SDL_KEYUP)
+            {
+                switch(e.key.keysym.sym)
+                {
+                    case SDLK_DOWN:
+                        ci++;
+                        break;
+                    case SDLK_UP:
+                        ci--;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         ImGui_ImplSDLRenderer_NewFrame();
@@ -66,7 +82,6 @@ int main(int argc, char* argv[])
         ImGui::InputText("tag", buffer, 128);
         //ImGui::Text("%s", buffer);
 
-        static int ci = 1;
         static std::map<std::string, std::vector<std::string>> mdb = tagging::filtered(db, {buffer});
         if (obuffer != std::string(buffer))
             {mdb = tagging::filtered(db, {buffer});}
@@ -125,6 +140,10 @@ int main(int argc, char* argv[])
                 system(cmd.c_str());
             }
         }
+
+        ImGui::Separator();
+        if (ImGui::Button("update database"))
+            {db = tagging::init(BASEDIR);}
 
         ImGui::End();
         ImGui::Render();
