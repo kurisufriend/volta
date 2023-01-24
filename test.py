@@ -18,3 +18,6 @@ if "r" in flags:
     system("./bin/Debug/volta-chan ./sample")
 if "d" in flags:
     system("gdb ./bin/Debug/volta-chan")
+if "pr" in flags:
+    system("valgrind --tool=callgrind bin/Debug/volta-chan ./sample/")
+    system("kcachegrind ./callgrind*")
