@@ -62,11 +62,14 @@ int main(int argc, char* argv[])
         ImVec2 s = ImGui::GetWindowSize();
 
         static char buffer[128] = "DICKS EVERYWHERE";
+        std::string obuffer = std::string(buffer);
         ImGui::InputText("tag", buffer, 128);
         //ImGui::Text("%s", buffer);
 
         static int ci = 1;
-        std::map<std::string, std::vector<std::string>> mdb = tagging::filtered(db, {buffer});
+        static std::map<std::string, std::vector<std::string>> mdb = tagging::filtered(db, {buffer});
+        if (obuffer != std::string(buffer))
+            {mdb = tagging::filtered(db, {buffer});}
         std::vector<const char*> keys;
         for (auto const& i : mdb)
             {keys.push_back(i.first.c_str());}
