@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     SDL_Window* w = SDL_CreateWindow("volta-chan cute librarian maid girl image tagger", 
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640*2, 360*2, SDL_WINDOW_SHOWN);
-    SDL_Renderer* r = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* r = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SDL_version compiled;
     SDL_version linked;
@@ -137,6 +137,7 @@ int main(int argc, char* argv[])
             SDL_Texture* tex = texmgr::load_image(r, path);
             int w, h;
             SDL_QueryTexture(tex, NULL, NULL, &w, &h);
+
 
             SDL_Rect rect{(int)(p.x + s.x), 1, 300, (int)((float)h*(300/(float)w))};
             SDL_RenderCopy(r, tex, NULL, &rect);
