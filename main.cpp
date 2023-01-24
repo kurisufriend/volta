@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iterator>
 #include <map>
+#include <sstream>
 #include <SDL2/SDL.h>
 #include "lib/tinydir.h"
 #include "lib/json.hpp"
@@ -22,7 +23,7 @@ int main(int argc, char* argv[])
     std::string BASEDIR = argv[1];
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     SDL_Window* w = SDL_CreateWindow("volta-chan cute librarian maid girl image tagger", 
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640*2, 360*2, SDL_WINDOW_SHOWN);
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640*2, 360*2, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     SDL_Renderer* r = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SDL_version compiled;
@@ -43,6 +44,7 @@ int main(int argc, char* argv[])
     int ci = 1;
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 
     while(!quit)
     {
@@ -80,11 +82,16 @@ int main(int argc, char* argv[])
         static char buffer[128] = "DICKS EVERYWHERE";
         std::string obuffer = std::string(buffer);
         ImGui::InputText("tag", buffer, 128);
-        //ImGui::Text("%s", buffer);
 
-        static std::map<std::string, std::vector<std::string>> mdb = tagging::filtered(db, {buffer});
+        std::vector<std::string> spltags;
+        std::stringstream stream(buffer);
+        std::string elem;
+        while (std::getline(stream, elem, ','))
+            {spltags.push_back(elem);}
+
+        static std::map<std::string, std::vector<std::string>> mdb = tagging::filtered(db, spltags);
         if (obuffer != std::string(buffer))
-            {mdb = tagging::filtered(db, {buffer});}
+            {mdb = tagging::filtered(db, {spltags});}
         std::vector<const char*> keys;
         for (auto const& i : mdb)
             {keys.push_back(i.first.c_str());}

@@ -1,5 +1,6 @@
 #include "tagging.h"
 #include <fstream>
+#include <iostream>
 #include "lib/tinydir.h"
 #include <map>
 
@@ -52,18 +53,20 @@ nlohmann::json tagging::filtered(nlohmann::json db, std::vector<std::string> tag
     std::map<std::string, std::vector<std::string>> nu;
     for (auto const& i : cur)
     {
+        int good = 0;
         for (int j = 0; j < db[i.first].size(); j++)
+        {
             for (int k = 0; k < tags.size(); k++)
             {
+                if (db[i.first].at(j) == tags.at(k))
                 {
-                    if (db[i.first].at(j) == tags.at(k))
-                    {
-                        nu[i.first] = i.second;
-                        break;
-                    }
+                    good++;
                 }
             }
-
+        }
+        std::cout << i.first << " " << good << " " << tags.size() << std::endl;
+        if (good == tags.size())
+            {nu[i.first] = i.second;}
     }
     nlohmann::json a(nu);
     return a;
